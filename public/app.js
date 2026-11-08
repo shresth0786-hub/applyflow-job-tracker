@@ -1,4 +1,5 @@
 import { boards, compareKeywords } from './logic.js';
+import { loadModel, predict } from './matcher.js';
 const $ = selector => document.querySelector(selector);
 const storageKey = 'applyflow-applications-v1';
 const statuses = ['Saved', 'Applied', 'Interview', 'Offer', 'Rejected'];
@@ -32,4 +33,19 @@ $('#open-match').addEventListener('click', () => $('#match-dialog').showModal())
 $('#application-form').addEventListener('submit', event => { event.preventDefault(); const form = new FormData(event.currentTarget); const title = String(form.get('title')).trim(); const company = String(form.get('company')).trim(); if (!title || !company) { notify('Enter a job title and company.'); return; } const url = String(form.get('url')).trim(); if (url && !safeUrl(url)) { notify('Enter an http or https job link.'); return; } applications.unshift({ title, company, status: form.get('status'), url }); const saved = save(); renderApplications(); event.currentTarget.reset(); $('#application-dialog').close(); if (saved) notify('Application added. Nice work!'); });
 $('#application-list').addEventListener('change', event => { if (event.target.matches('[data-index]')) { const item = applications[Number(event.target.dataset.index)]; if (item && statuses.includes(event.target.value)) { item.status = event.target.value; save(); renderApplications(); } } });
 $('#application-list').addEventListener('click', event => { const button = event.target.closest('[data-delete]'); if (!button) return; const index = Number(button.dataset.delete); if (!applications[index]) return; if (!confirm(`Remove ${applications[index].title} at ${applications[index].company}?`)) return; applications.splice(index, 1); save(); renderApplications(); });
-$('#match-form').addEventListener('submit', event => { event.preventDefault(); const data = new FormData(event.currentTarget); const result = compareKeywords(String(data.get('resume')), String(data.get('description'))); const chips = words => words.length ? words.map(word => `<span>${escapeHtml(word)}</span>`).join('') : '<em>None found</em>'; $('#match-results').innerHTML = result.total ? `<h3>${result.matched.length} of ${result.total} keywords found</h3><p>These are frequent words in the job description, not a measure of your qualifications. Only add skills you actually have.</p><strong>Found in your resume</strong><div class="chips found">${chips(result.matched)}</div><strong>Worth reviewing</strong><div class="chips">${chips(result.missing)}</div>` : '<p>No meaningful keywords found. Try a longer job description.</p>'; });
+$('#match-form').addEventListener('submit', async event => {
+  event.preventDefault();
+  const form = event.currentTarget, button = form.querySelector('button[type=submit]');
+  const data = new FormData(form), resume = String(data.get('resume')).trim(), description = String(data.get('description')).trim();
+  const output = $('#match-results');
+  if (resume.length < 30 || description.length < 30) { output.textContent = 'Add at least 30 characters to each field for a useful comparison.'; return; }
+  button.disabled = true; output.textContent = 'Reviewing your experience…';
+  try {
+    const result = compareKeywords(resume, description);
+    const model = await loadModel();
+    const chips = words => words.length ? words.map(word => `<span>${escapeHtml(word)}</span>`).join('') : '<em>None found</em>';
+    const assessment = model ? `<p><strong>${predict(model, resume, description) >= model.threshold ? 'Similar to reviewed matches' : 'Review the requirements carefully'}</strong> · Model feedback is a guide; check the requirements yourself.</p>` : '<p>Keyword review is available. Model feedback will appear here when a model passes evaluation.</p>';
+    output.innerHTML = result.total ? `${assessment}<h3>${result.matched.length} of ${result.total} keywords found</h3><p>Use the terms below to check relevant experience. Add a concrete example for skills you have; only include truthful details.</p><strong>Found in your resume</strong><div class="chips found">${chips(result.matched)}</div><strong>Requirements to review</strong><div class="chips">${chips(result.missing)}</div><p>These terms do not measure your qualifications or predict an employer’s decision.</p>` : '<p>No meaningful keywords found. Try a longer job description.</p>';
+  } catch { output.textContent = 'The comparison could not finish. Please try again.'; }
+  finally { button.disabled = false; }
+});
