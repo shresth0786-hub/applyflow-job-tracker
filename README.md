@@ -8,9 +8,40 @@ A local job search workspace for tracking applications and comparing resume keyw
 
 Requires Node.js 20 or newer. Run `npm start`, then open http://localhost:3000. Run `npm test` for the logic tests.
 
-Applications are stored in the current browser's local storage, so they are specific to that browser and can be lost if its site data is cleared. Resume and job description text are processed locally and are not saved by the app.
+<!-- coderabbit-ai-generated:v1 -->
+
+<!-- coderabbit-ai-generated-section:v1:36c02f8989c955aa62447568dfa547b9ebbf19b250a3eb2e9639a919beae22fe -->
+
+Applications are stored in the current browser's local storage, so they are specific to that browser and can be lost if its site data is cleared. Keyword review runs in the browser. When you request Zephyr advice or a cover letter, resume and job text are sent to the app server and its local model process. The app does not save that text.
+
+<!-- /coderabbit-ai-generated:v1 -->
+
+<!-- coderabbit-ai-generated:v1 -->
+
+<!-- coderabbit-ai-generated-section:v1:27bf67e8e67f8969d137120a8a5b0db9e5ce7b1c9e73e79998536209c9c84406 -->
+
+## Zephyr assistant
+
+The match dialog offers AI advice and a cover-letter draft using Zephyr 7B. To prepare local CPU inference, install Git, CMake, a C++ compiler, curl, and sha256sum, then run:
+
+```sh
+bash scripts/setup-zephyr.sh
+bash scripts/start-zephyr.sh
+```
+
+Run `npm start` in a separate terminal. Setup downloads a 3.5 GB Q3_K_M quantization of Zephyr from [TheBloke/zephyr-7B-beta-GGUF](https://huggingface.co/TheBloke/zephyr-7B-beta-GGUF), verifies its checksum, and builds a pinned llama.cpp revision. The model is based on [HuggingFaceH4/zephyr-7b-beta](https://huggingface.co/HuggingFaceH4/zephyr-7b-beta); quantization may affect output quality. The default cache is `~/.cache/applyflow-zephyr`; set `ZEPHYR_HOME` consistently for both scripts to change it. The model server binds to 127.0.0.1:8081 and requires several GB of free RAM. CPU generation can take minutes.
+
+<!-- coderabbit-ai-generated:v1 -->
+
+<!-- coderabbit-ai-generated-section:v1:0fdfbb4c38b6acf7c2d7e30c6bf7fecbd3746f4f855449e91b4b032b2e8470c3 -->
+
+AI requests send resume text to the app server and local inference process; advice also uses the job description. They are not sent to a third-party inference API. Cover-letter drafts use the resume only so job requirements are not presented to the model as applicant experience; personalize the draft for the role. Limit each field to 3,000 characters for AI requests. Zephyr can invent claims even with careful prompts, so review every detail before using its output. Keyword review works when Zephyr is unavailable.
+
+<!-- /coderabbit-ai-generated:v1 -->
 
 ## Job sites
+
+<!-- /coderabbit-ai-generated:v1 -->
 
 LinkedIn, Naukri, Indeed and Google Jobs links open searches based on the entered role and location. Glassdoor uses the role, and Wellfound opens its jobs page. Search results and applying are handled by each site. These links do not connect accounts or automatically submit applications.
 
@@ -24,7 +55,13 @@ LinkedIn, Naukri, Indeed and Google Jobs links open searches based on the entere
 
 <!-- coderabbit-ai-generated-section:v1:0505fd211408b7f0fd43b39a0e3e2e42fb4ed03e88c271b2375aeb272eebf376 -->
 
-The match assistant provides keyword feedback and can load a locally hosted model that passes the evaluation checks described below. All resume and job text stays in the browser. Missing, invalid, slow, or unevaluated models fall back to keyword review. Feedback does not evaluate qualifications or predict hiring decisions. Only include experience that is true.
+<!-- coderabbit-ai-generated:v1 -->
+
+<!-- coderabbit-ai-generated-section:v1:73251b5d25c8451fb9bb0d4805e35589e97b074d643e9459b51e03ee5d82962c -->
+
+The match assistant provides keyword feedback and can load a locally hosted matching model that passes the evaluation checks below. Zephyr advice and cover-letter drafting are separate actions and send the text to the app server for local processing. Feedback does not evaluate qualifications or predict hiring decisions. Only include experience that is true.
+
+<!-- /coderabbit-ai-generated:v1 -->
 
 <!-- /coderabbit-ai-generated:v1 -->
 
