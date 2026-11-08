@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#202a26"><title>Applyflow — Your job search, in flow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css"><script type="module" src="/app.js"></script>
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <a class="brand" href="#dashboard"><span class="brand-mark">✳</span><span>applyflow<span class="brand-dot">.</span></span></a>
+    <div class="workspace-label">YOUR WORKSPACE</div>
+    <nav class="side-nav" aria-label="Main navigation">
+      <a class="nav-link active" href="#dashboard"><span>▦</span> Overview</a>
+      <a class="nav-link" href="#discover"><span>⌕</span> Find jobs</a>
+      <a class="nav-link" href="#applications"><span>▤</span> Applications</a>
+      <a class="nav-link" href="#match"><span>✧</span> Match assistant <small>NEW</small></a>
+    </nav>
+    <div class="sidebar-bottom"><div class="side-sparkle">✳</div><strong>A little progress<br>adds up.</strong><p>One application at a time, you're getting closer.</p><a href="#discover">Find your next role <span>↗</span></a></div>
+    <div class="side-footer"><span class="avatar">Y</span><span><b>Your workspace</b><small>Personal job search</small></span><span class="dots">···</span></div>
+  </aside>
+  <main id="dashboard" class="main">
+    <header class="topbar"><div class="breadcrumb">Workspace <span>/</span> <b>Overview</b></div><div class="top-actions"><span class="today" id="today"></span><button class="button button-dark top-add" data-open-dialog>＋ <span>Add application</span></button></div></header>
+    <div class="content">
+      <section class="intro"><div><div class="eyebrow"><span class="green-dot"></span> YOUR CAREER COMMAND CENTER</div><h1>Let’s make your next<br class="desktop-break"> move a great one<span class="period">.</span></h1><p>Find opportunities, stay organized, and put your best foot forward.</p></div><div class="intro-art" aria-hidden="true"><span class="orbit orbit-one"></span><span class="orbit orbit-two"></span><span class="art-star">✳</span><span class="art-small">✦</span><span class="art-tag">Your next chapter ↗</span></div></section>
+      <section class="stats" aria-label="Application statistics">
+        <div class="stat"><span class="stat-icon mint">▤</span><div><p>Total applications</p><strong id="total-count">0</strong></div><span class="stat-arrow">↗</span></div>
+        <div class="stat"><span class="stat-icon peach">◷</span><div><p>In progress</p><strong id="progress-count">0</strong></div><span class="stat-arrow">↗</span></div>
+        <div class="stat"><span class="stat-icon lavender">✦</span><div><p>Interviews</p><strong id="interview-count">0</strong></div><span class="stat-arrow">↗</span></div>
+        <div class="stat"><span class="stat-icon yellow">✓</span><div><p>Offers</p><strong id="offer-count">0</strong></div><span class="stat-arrow">↗</span></div>
+      </section>
+      <div class="content-grid"><div class="primary-column">
+        <section id="discover" class="card discover-card"><div class="section-heading"><div><div class="section-kicker">LET’S GET EXPLORING <span>✳</span></div><h2>Find your kind of work</h2><p>Search across your favorite job boards, all from one place.</p></div><span class="heading-icon">↗</span></div>
+          <form id="search-form" class="search-form"><label><span>Role or keyword</span><div class="input-wrap"><i>⌕</i><input id="keyword" name="keyword" placeholder="e.g. Product designer" required></div></label><label><span>Location</span><div class="input-wrap"><i>⌾</i><input id="location" name="location" placeholder="e.g. Remote"></div></label><button class="button button-dark" type="submit">Search LinkedIn <span>↗</span></button></form>
+          <div class="board-heading"><span>EXPLORE ON</span><span>Select a site to open it ↗</span></div><div id="boards" class="boards"></div>
+        </section>
+        <section id="applications" class="card applications-card"><div class="section-heading compact"><div><div class="section-kicker">KEEP THE MOMENTUM GOING</div><h2>Your applications <span class="count-pill" id="application-count">0</span></h2><p>Everything you’re working towards, in one place.</p></div><button class="button button-light" data-open-dialog>＋ Add new</button></div><div id="application-list" class="application-list"></div></section>
+      </div><aside class="secondary-column">
+        <section id="match" class="card match-card"><div class="match-top"><span class="match-icon">✳</span><span class="badge">YOUR CAREER TOOLKIT</span></div><h2>Make your<br>experience shine<span class="period">.</span></h2><p>Compare your resume with a job description and find keywords you might have missed.</p><div class="match-illustration" aria-hidden="true"><div class="paper paper-back"></div><div class="paper paper-front"><span>✦</span><i></i><i></i><i></i><em>✓</em></div><span class="floating-spark">✧</span></div><button class="button button-dark full" id="open-match">Try match assistant <span>↗</span></button><small>Private to this browser · No account needed</small></section>
+        <section class="tip-card"><div class="tip-icon">✦</div><div><span>A LITTLE REMINDER</span><p>It’s not about applying everywhere. It’s about finding the right fit.</p></div></section>
+      </aside></div>
+      <footer>Made for your next move <span>✳</span> <span>Keep going, you’ve got this.</span></footer>
+    </div>
+  </main>
+</div>
+<dialog id="application-dialog"><form id="application-form"><div class="dialog-head"><div><div class="section-kicker">STAY ORGANIZED</div><h2>Add an application</h2><p>Keep track of an opportunity you care about.</p></div><button type="button" class="close" data-close="application-dialog" aria-label="Close">×</button></div><div class="form-grid"><label>Job title<input name="title" required maxlength="100" placeholder="e.g. Product designer"></label><label>Company<input name="company" required maxlength="100" placeholder="e.g. Acme"></label><label>Status<select name="status"><option>Saved</option><option>Applied</option><option>Interview</option><option>Offer</option><option>Rejected</option></select></label><label>Job link <span>(optional)</span><input name="url" type="url" placeholder="https://..."></label></div><div class="dialog-actions"><button type="button" class="button button-light" data-close="application-dialog">Cancel</button><button class="button button-dark" type="submit">Save application</button></div></form></dialog>
+<dialog id="match-dialog"><form id="match-form"><div class="dialog-head"><div><div class="section-kicker">MATCH ASSISTANT ✳</div><h2>See how your experience fits</h2><p>Paste your resume and a job description to compare their keywords. This is a simple local comparison, not an AI assessment.</p></div><button type="button" class="close" data-close="match-dialog" aria-label="Close">×</button></div><label>Your resume<textarea name="resume" required placeholder="Paste your resume text here..."></textarea></label><label>Job description<textarea name="description" required placeholder="Paste the job description here..."></textarea></label><button class="button button-dark full" type="submit">Compare keywords ✦</button><div id="match-results" class="match-results" aria-live="polite"></div></form></dialog>
+<div class="toast" id="toast" role="status"></div>
+</body></html>
